@@ -4,7 +4,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Navbar Template for Bootstrap</title>
+    <title>How to create Mysql user</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="cover.css">
 
@@ -15,7 +15,7 @@
     <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
       <header class="masthead mb-auto">
         <div class="inner">
-          <h3 class="masthead-brand">How to create mysql user</h3>
+          <h3 class="masthead-brand">How to create Mysql user</h3>
           <nav class="nav nav-masthead justify-content-center">
 <!--             <a class="nav-link active" href="#">Home</a>
             <a class="nav-link" href="#">Features</a>
@@ -25,7 +25,7 @@
       </header>
 
       <main role="main" class="inner cover">
-          <div class="row">
+          <div class="row text-left">
             <!-- DB ENGINE -->
             <div class="col">
           <div class="custom-control custom-radio">
@@ -53,24 +53,27 @@
             <!-- User/DB -->
             <div class="col">
             	<div class="input-group input-group-sm">
-            		<input type="text" class="form-control" name="" value="username">
+            		<input type="text" class="form-control" name="username" placeholder="username">
             	</div>
             	<div class="input-group input-group-sm">
-            		<input type="text" class="form-control" name="" value="database">
+            		<input type="text" class="form-control" name="database" placeholder="database">
+            	</div>
+              <div class="input-group input-group-sm">
+                <input type="text" class="form-control" name="tables" value="*" placeholder="tables">
+              </div>
+            	<div class="input-group input-group-sm">
+            		<input type="text" class="form-control" name="password" placeholder="password">
             	</div>
             	<div class="input-group input-group-sm">
-            		<input type="text" class="form-control" name="" value="jwxPjVyb0Usb1jlxd4swq-wRLhi0Hykf">
-            	</div>
-            	<div class="input-group input-group-sm">
-            		<input type="text" class="form-control" name="" value="hostname">
-					<div class="input-group-append">
-					<button class="btn btn-primary" type="button">localhost</button>
-					</div>
+            		<input type="text" class="form-control" name="hostname" placeholder="hostname" value="localhost">
+      					<div class="input-group-append">
+                   <button class="btn btn-primary any-hostname" type="button">any</button>
+      					</div>
             	</div>
             </div>
             <!-- User/DB -->
             <!-- Permissions -->
-            <div class="col">
+            <div class="col text-left">
 				<div class="form-check align-items-left">
 				  <input class="form-check-input"  name="perms" type="radio" value="ro" checked>
 				  <label class="form-check-label">Read Only</label>
@@ -80,7 +83,7 @@
 				  <label class="form-check-label">CRUD</label>
 				</div>
 				<div class="form-check disabled">
-				  <input class="form-check-input" type="radio" name="perms" value="app" disabled>
+				  <input class="form-check-input" type="radio" name="perms" value="app">
 				  <label class="form-check-label">Wordpress/App</label>
 				</div>
 				<div class="form-check disabled">
@@ -116,11 +119,12 @@
             <!-- Permissions -->
           </div>
       <div class="md-form">
+    <br>
         <textarea id="form7" class="md-textarea form-control" rows="3">
 CREATE USER 'username'@'localhost' IDENTIFIED BY '******';
 GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
       </div>
-
+<br>
       <p>Generate your own secure password by pasting the snipet below in your shell:</p>
       <code> < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;</code>
       </main>
@@ -134,18 +138,24 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
 
     <style type="text/css">
     	.input-group { margin-bottom: 4px !important; }
+      textarea { font-size: 12px!important; }
     </style>
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-
+<script src="https://raw.github.com/bermi/password-generator/master/dist/password-generator.min.js" type="text/javascript"></script>
     <script type="text/javascript">
+
+      $(document).ready(function() {
+        let pass = generatePassword();
+        $('input[name=password]').val(pass);
+      });
 
     	let permissions = {
     		'ro': 			'SELECT',
     		'crud': 		'SELECT,UPDATE,INSERT,DELETE',
-    		'app': 			'',
+    		'app': 			'SELECT,UPDATE,INSERT,DELETE,CREATE,ALTER,INDEX,DROP',
     		'replication': 	'',
     		'admin': 		'ALL PRIVILEGES'
     	};
@@ -158,14 +168,18 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
     		return `GRANT ${perms} ON ${db}.${tables} TO '${user}'@'${host}';`;
     	}
 
+      $('.any-hostname').on('click', function(e) {
+        $('input[name=hostname]').val('%');
+      });
+
 
     	$('input').on('change', function(e) {
 
-	    	let user = 'pedro';
-	    	let pass = 'pedrog';
-	    	let host = '127.0.0.1';
-	    	let db   = 'app';
-	    	let tables = '*';
+	    	let user = $('input[name=username]').val();
+	    	let pass = $('input[name=password]').val();
+	    	let host = $('input[name=hostname]').val();
+	    	let db   = $('input[name=database]').val();
+	    	let tables = $('input[name=tables]').val();
 	    	let perms = permissions[$('input[name=perms]:checked').val()];
 	    	let userQuery = createUserQuery(user, host, pass);
 	    	let grantsQuery = createGrantsQuery(perms, db, tables, user, host);
