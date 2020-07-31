@@ -1,26 +1,179 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>How to create Mysql user</title>
-</head>
-<body>
 
-	<p>
-		Copy paste queries
-	</p>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Navbar Template for Bootstrap</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="cover.css">
 
-	<code>
-		CREATE USER 'user'@'%' IDENTIFIED BY 'pass';
-		GRANT SELECT ON db. * TO 'user'@'%';
-	</code>
+  </head>
 
-	<p>
-		Coming soon: SQL Server, Postgres, Oracle, DB2, and more.
-	</p>
+  <body class="text-center">
 
-	<p>
-		How to use ansible for mysql users
-	</p>
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <h3 class="masthead-brand">How to create mysql user</h3>
+          <nav class="nav nav-masthead justify-content-center">
+<!--             <a class="nav-link active" href="#">Home</a>
+            <a class="nav-link" href="#">Features</a>
+            <a class="nav-link" href="#">Contact</a> -->
+          </nav>
+        </div>
+      </header>
 
-</body>
+      <main role="main" class="inner cover">
+          <div class="row">
+            <!-- DB ENGINE -->
+            <div class="col">
+          <div class="custom-control custom-radio">
+            <input type="radio" class="custom-control-input" checked>
+            <label class="custom-control-label">Mysql/MariaDb</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" class="custom-control-input" disabled>
+            <label class="custom-control-label">Postgres</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" class="custom-control-input" disabled>
+            <label class="custom-control-label">Oracle</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" class="custom-control-input" disabled>
+            <label class="custom-control-label">DB2</label>
+          </div>
+          <div class="custom-control custom-radio">
+            <input type="radio" class="custom-control-input" disabled>
+            <label class="custom-control-label">SQL Server</label>
+          </div>
+            </div>
+            <!-- END DB ENGINE -->
+            <!-- User/DB -->
+            <div class="col">
+            	<div class="input-group input-group-sm">
+            		<input type="text" class="form-control" name="" value="username">
+            	</div>
+            	<div class="input-group input-group-sm">
+            		<input type="text" class="form-control" name="" value="database">
+            	</div>
+            	<div class="input-group input-group-sm">
+            		<input type="text" class="form-control" name="" value="jwxPjVyb0Usb1jlxd4swq-wRLhi0Hykf">
+            	</div>
+            	<div class="input-group input-group-sm">
+            		<input type="text" class="form-control" name="" value="hostname">
+					<div class="input-group-append">
+					<button class="btn btn-primary" type="button">localhost</button>
+					</div>
+            	</div>
+            </div>
+            <!-- User/DB -->
+            <!-- Permissions -->
+            <div class="col">
+				<div class="form-check align-items-left">
+				  <input class="form-check-input"  name="perms" type="radio" value="ro" checked>
+				  <label class="form-check-label">Read Only</label>
+				</div>
+				<div class="form-check">
+				  <input class="form-check-input"  name="perms" type="radio" value="crud">
+				  <label class="form-check-label">CRUD</label>
+				</div>
+				<div class="form-check disabled">
+				  <input class="form-check-input" type="radio" name="perms" value="app" disabled>
+				  <label class="form-check-label">Wordpress/App</label>
+				</div>
+				<div class="form-check disabled">
+				  <input class="form-check-input" type="radio" name="perms" value="replication" disabled>
+				  <label class="form-check-label">Replication</label>
+				</div>
+				<div class="form-check disabled">
+				  <input class="form-check-input" type="radio" name="perms" value="admin">
+				  <label class="form-check-label">Full Access/Admin</label>
+				</div>
+	         <!--  <div class="custom-control custom-radio">
+	            <input type="radio" class="custom-control-input perms" value="ro" checked>
+	            <label class="custom-control-label">Read Only</label>
+	          </div>
+	          <div class="custom-control custom-radio">
+	            <input type="radio" class="custom-control-input perms" value="crud">
+	            <label class="custom-control-label">CRUD</label>
+	          </div>
+	          <div class="custom-control custom-radio perms" value="app">
+	            <input type="radio" class="custom-control-input">
+	            <label class="custom-control-label">WordPres/Framework</label>
+	          </div>
+	          <div class="custom-control custom-radio perms" value="replication">
+	            <input type="radio" class="custom-control-input" disabled>
+	            <label class="custom-control-label">Replication</label>
+	          </div>
+	          <div class="custom-control custom-radio perms" value="admin">
+	            <input type="radio" class="custom-control-input" disabled>
+	            <label class="custom-control-label">Full Access/Admin</label>
+	          </div> -->
+
+            </div>
+            <!-- Permissions -->
+          </div>
+      <div class="md-form">
+        <textarea id="form7" class="md-textarea form-control" rows="3">
+CREATE USER 'username'@'localhost' IDENTIFIED BY '******';
+GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
+      </div>
+
+      <p>Generate your own secure password by pasting the snipet below in your shell:</p>
+      <code> < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;</code>
+      </main>
+
+      <footer class="mastfoot mt-auto">
+        <div class="inner">
+          <p>Credits</p>
+        </div>
+      </footer>
+    </div>
+
+    <style type="text/css">
+    	.input-group { margin-bottom: 4px !important; }
+    </style>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+
+    	let permissions = {
+    		'ro': 			'SELECT',
+    		'crud': 		'SELECT,UPDATE,INSERT,DELETE',
+    		'app': 			'',
+    		'replication': 	'',
+    		'admin': 		'ALL PRIVILEGES'
+    	};
+
+    	function createUserQuery(user, host, pass) {
+    		return `CREATE USER '${user}'@'${host}' IDENTIFIED BY '${pass}';`;
+    	}
+
+    	function createGrantsQuery(perms, db, tables, user, host) {
+    		return `GRANT ${perms} ON ${db}.${tables} TO '${user}'@'${host}';`;
+    	}
+
+
+    	$('input').on('change', function(e) {
+
+	    	let user = 'pedro';
+	    	let pass = 'pedrog';
+	    	let host = '127.0.0.1';
+	    	let db   = 'app';
+	    	let tables = '*';
+	    	let perms = permissions[$('input[name=perms]:checked').val()];
+	    	let userQuery = createUserQuery(user, host, pass);
+	    	let grantsQuery = createGrantsQuery(perms, db, tables, user, host);
+	    	let result = [userQuery, grantsQuery].join('\n');
+	    	$('textarea').val(result);
+
+    	});
+
+    </script>
+  </body>
 </html>
