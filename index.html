@@ -15,7 +15,7 @@
     <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
       <header class="masthead mb-auto">
         <div class="inner">
-          <h3 class="masthead-brand">How to create Mysql user</h3>
+          <a href="/"><h3 class="masthead-brand">How to create Mysql user</h3></a>
           <nav class="nav nav-masthead justify-content-center">
 <!--             <a class="nav-link active" href="#">Home</a>
             <a class="nav-link" href="#">Features</a>
@@ -60,9 +60,17 @@
             	</div>
               <div class="input-group input-group-sm">
                 <input type="text" class="form-control" name="tables" value="*" placeholder="tables">
+                <div class="input-group-append">
+                   <button class="btn btn-primary any-tables" type="button">any</button>
+                </div>
+
               </div>
             	<div class="input-group input-group-sm">
             		<input type="text" class="form-control" name="password" placeholder="password">
+                <div class="input-group-append">
+                   <button class="btn btn-primary password-new" type="button">new</button>
+                </div>
+
             	</div>
             	<div class="input-group input-group-sm">
             		<input type="text" class="form-control" name="hostname" placeholder="hostname" value="localhost">
@@ -94,44 +102,23 @@
 				  <input class="form-check-input" type="radio" name="perms" value="admin">
 				  <label class="form-check-label">Full Access/Admin</label>
 				</div>
-	         <!--  <div class="custom-control custom-radio">
-	            <input type="radio" class="custom-control-input perms" value="ro" checked>
-	            <label class="custom-control-label">Read Only</label>
-	          </div>
-	          <div class="custom-control custom-radio">
-	            <input type="radio" class="custom-control-input perms" value="crud">
-	            <label class="custom-control-label">CRUD</label>
-	          </div>
-	          <div class="custom-control custom-radio perms" value="app">
-	            <input type="radio" class="custom-control-input">
-	            <label class="custom-control-label">WordPres/Framework</label>
-	          </div>
-	          <div class="custom-control custom-radio perms" value="replication">
-	            <input type="radio" class="custom-control-input" disabled>
-	            <label class="custom-control-label">Replication</label>
-	          </div>
-	          <div class="custom-control custom-radio perms" value="admin">
-	            <input type="radio" class="custom-control-input" disabled>
-	            <label class="custom-control-label">Full Access/Admin</label>
-	          </div> -->
-
-            </div>
+        </div>
             <!-- Permissions -->
           </div>
       <div class="md-form">
     <br>
-        <textarea id="form7" class="md-textarea form-control" rows="3">
+        <textarea onfocus="this.select()" id="form7" class="md-textarea form-control" rows="3">
 CREATE USER 'username'@'localhost' IDENTIFIED BY '******';
 GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
       </div>
 <br>
-      <p>Generate your own secure password by pasting the snipet below in your shell:</p>
+      <p> Generate your own secure password by pasting the snipet below in your shell:</p>
       <code> < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;</code>
       </main>
 
       <footer class="mastfoot mt-auto">
         <div class="inner">
-          <p>Manage your Mysql grants as code:  <a href="#" class="disabled">Ansible</a> </p>
+          <p>Manage your Mysql grants as code:  <a href="ansible.html">Ansible</a> </p>
         </div>
       </footer>
     </div>
@@ -144,12 +131,12 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 <script src="./files/password-generator.min.js" type="text/javascript"></script>
     <script type="text/javascript">
 
       $(document).ready(function() {
-        let pass = generatePassword(32, false);
-        $('input[name=password]').val(pass);
+        updatePassword();
       });
 
     	let permissions = {
@@ -159,6 +146,11 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
     		'replication': 	'',
     		'admin': 		'ALL PRIVILEGES'
     	};
+
+      function updatePassword() {
+        let pass = generatePassword(32, false);
+        $('input[name=password]').val(pass);
+      }
 
     	function createUserQuery(user, host, pass) {
     		return `CREATE USER '${user}'@'${host}' IDENTIFIED BY '${pass}';`;
@@ -173,14 +165,24 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
         $('input').trigger("change");
       });
 
+      $('.any-tables').on('click', function(e) {
+        $('input[name=tables]').val('*');
+        $('input').trigger("change");
+      });
+
+      $('.password-new').on('click', function(e) {
+        updatePassword();
+        $('input').trigger("change");
+      });
+
 
     	$('input').on('change', function(e) {
 
-	    	let user = $('input[name=username]').val();
-	    	let pass = $('input[name=password]').val();
-	    	let host = $('input[name=hostname]').val();
-	    	let db   = $('input[name=database]').val();
-	    	let tables = $('input[name=tables]').val();
+	    	let user = $('input[name=username]').val().trim();
+	    	let pass = $('input[name=password]').val().trim();
+	    	let host = $('input[name=hostname]').val().trim();
+	    	let db   = $('input[name=database]').val().trim();
+	    	let tables = $('input[name=tables]').val().trim();
 	    	let perms = permissions[$('input[name=perms]:checked').val()];
 	    	let userQuery = createUserQuery(user, host, pass);
 	    	let grantsQuery = createGrantsQuery(perms, db, tables, user, host);
