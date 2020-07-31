@@ -131,7 +131,7 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
 
       <footer class="mastfoot mt-auto">
         <div class="inner">
-          <p>Credits</p>
+          <p>Manage your Mysql grants as code:  <a href="#" class="disabled">Ansible</a> </p>
         </div>
       </footer>
     </div>
@@ -148,7 +148,7 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
     <script type="text/javascript">
 
       $(document).ready(function() {
-        let pass = generatePassword(32);
+        let pass = generatePassword(32, false);
         $('input[name=password]').val(pass);
       });
 
@@ -170,6 +170,7 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
 
       $('.any-hostname').on('click', function(e) {
         $('input[name=hostname]').val('%');
+        $('input').trigger("change");
       });
 
 
