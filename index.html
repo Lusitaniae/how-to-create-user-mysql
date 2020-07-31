@@ -148,7 +148,7 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
     <script type="text/javascript">
 
       $(document).ready(function() {
-        let pass = generatePassword();
+        let pass = generatePassword(32);
         $('input[name=password]').val(pass);
       });
 
