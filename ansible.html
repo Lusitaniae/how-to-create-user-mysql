@@ -32,7 +32,7 @@
       <main role="main" class="inner cover">
           <div class="row text-left">
           	<p> Ansible has official support to managing users and grants through a community maintained module. <a href="https://docs.ansible.com/ansible/latest/modules/mysql_user_module.html">Click here for documentation.</a> There's more modules to manage different aspects of Mysql, you can definitely do a lot more as code using Ansible.
-          	Make sure to read the documentation to know all the features, know every input option and all the use cases supported. Also good to copy the code snippets with the correct indenting.</p>
+          	Make sure to read the documentation to know all the features, know every input option and all the use cases supported. </p>
           	<code>
 - name: Create user with differente permissions to different databases
   mysql_user:
@@ -42,7 +42,7 @@
     state: present
     priv: "mydb.*:INSERT,UPDATE/anotherdb.*:SELECT/yetanotherdb.*:ALL"
 
-          	</code>
+            	</code>
           	<code>
 - name: Create read only users for analytics db
   mysql_user:
