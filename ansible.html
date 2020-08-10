@@ -8,7 +8,7 @@
 	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 	<link rel="manifest" href="/site.webmanifest">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>How to create Mysql user using Ansible</title>
+    <title>How to create Mysql user/grants using Ansible</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="cover.css">
 
@@ -19,7 +19,7 @@
     <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
       <header class="masthead mb-auto">
         <div class="inner">
-          <a href="/"><h3 class="masthead-brand">How to create Mysql user using Ansible</h3></a>
+          <a href="/"><h3 class="masthead-brand">How to create Mysql user/grants using Ansible</h3></a>
           <nav class="nav nav-masthead justify-content-center">
 <!--             <a class="nav-link active" href="#">Home</a>
             <a class="nav-link" href="#">Features</a>
@@ -31,7 +31,7 @@
       <main role="main" class="inner cover">
           <div class="row text-left">
           	<p> Ansible has official support to managing users and grants through a community maintained module. <a href="https://docs.ansible.com/ansible/latest/modules/mysql_user_module.html">Click here for documentation.</a> There's more modules to manage different aspects of Mysql, you can definitely do a lot more as code using Ansible.
-          	</p>
+          	Make sure to read the documentation to know all the features, know every input option and all the use cases supported. Also good to copy the code snippets with the correct indenting.</p>
           	<code>
 - name: Create user with differente permissions to different databases
   mysql_user:
@@ -56,12 +56,17 @@
   	- user3
 
           	</code>
+            <h3>Why Ansible for managing Mysql users/grants</h3>
+            <p>Ansible is a configuration management tool that provides you the ability to manage your infrastructure as code. It's one of the most popular options and it differs from the more popular Chef and Puppet by managing nodes on push mode instead of having agents pulling changes from the central repository. It's biggest strengths are simple configuration based on YAML, pushing changes on demand via SSH connection, no agents required on the target hosts, only python and an SSH server. Being open source you can find Playbooks and roles for all your needs, most of them will be plug and play, with no changes required from you besides adding the roles to your playbooks.</p>
+            <h3>Why manage users/grants as code?</h3>
+            <p>This is part of the devops movement where you move from having servers that are manually configured and expected to run for years to infrastructure and configuration as code, where any server is easily reproduced via code. This brings the best software engineering practices to the typical SysAdmin work. Any code changes can and should be peer reviewed, and version controlled. Managing changes across multiple environments becomes easier as it's easier to diff simple YAML config files instead of trying to find out the difference between servers. Among many other benefits.</p>
+
           </div>
       </main>
 
       <footer class="mastfoot mt-auto">
         <div class="inner">
-          <p>Manage your Mysql grants as code:  <a href="ansible.html">Ansible</a> </p>
+          Copyright © 2020- howtocreateusermysql.com  All Rights Reserved.
         </div>
       </footer>
     </div>
@@ -74,13 +79,5 @@
 		  white-space: pre-wrap   
 		}
     </style>
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="./files/password-generator.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-    </script>
   </body>
 </html>
