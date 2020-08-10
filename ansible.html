@@ -11,6 +11,7 @@
     <title>How to create Mysql user/grants using Ansible</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="cover.css">
+  <meta name="description" content="Learn how to use Ansible to manage users in a Mysql database and manage access by creating custom grants for each user.">
 
   </head>
 
@@ -19,7 +20,7 @@
     <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
       <header class="masthead mb-auto">
         <div class="inner">
-          <a href="/"><h3 class="masthead-brand">How to create Mysql user/grants using Ansible</h3></a>
+          <a href="/"><h1 class="masthead-brand">How to create Mysql user/grants using Ansible</h1></a>
           <nav class="nav nav-masthead justify-content-center">
 <!--             <a class="nav-link active" href="#">Home</a>
             <a class="nav-link" href="#">Features</a>
@@ -41,7 +42,7 @@
     state: present
     priv: "mydb.*:INSERT,UPDATE/anotherdb.*:SELECT/yetanotherdb.*:ALL"
 
-          	</code>
+          	</code>percon
           	<code>
 - name: Create read only users for analytics db
   mysql_user:
