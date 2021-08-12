@@ -1,0 +1,79 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>How to create Mysql user/grants using Puppet</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="cover.css">
+  <meta name="description" content="Learn how to use Puppet to manage users in a Mysql database and manage access by creating custom grants for each user.">
+  <style media="screen">
+      p a { text-decoration: underline;}
+  </style>
+  </head>
+
+  <body class="text-center">
+
+    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
+      <header class="masthead mb-auto">
+        <div class="inner">
+          <a href="/"><h1 class="masthead-brand">How to create Mysql user/grants using Puppet</h1></a>
+          <nav class="nav nav-masthead justify-content-center">
+          </nav>
+        </div>
+      </header>
+
+      <main role="main" class="inner cover">
+          <div class="row text-left">
+          	<p> Puppet has official support to managing users and grants through a community maintained module. <a href="https://forge.puppet.com/modules/puppetlabs/mysql#setup">Click here for documentation.</a> There's more modules to manage different aspects of Mysql, you can definitely do a lot more as code using Puppet.
+          	Make sure to read the documentation to know all the features, know every input option and all the use cases supported. </p>
+
+            <p>Create a user with SELECT and UPDATE permissions</p>
+          	<code>
+mysql::db { 'mydb':
+  user     => 'myuser',
+  password => 'mypass',
+  host     => 'localhost',
+  grant    => ['SELECT', 'UPDATE'],
+}
+            	</code>
+                <p>Create a user with a pre hashed password and the same SELECT and UPDATE permissions</p>
+          	<code>
+mysql::db { 'mydb':
+  user     => 'myuser',
+  password => '*6C8989366EAF75BB670AD8EA7A7FC1176A95CEF4',
+  host     => 'localhost',
+  grant    => ['SELECT', 'UPDATE'],
+}
+
+          	</code>
+            <h3>Why Puppet for managing Mysql users/grants</h3>
+            <p>Ansible is a configuration management tool that provides you the ability to manage your infrastructure as code. [TODO]</p>
+            <h3>Why manage users/grants as code?</h3>
+            <p>[TODO].</p>
+
+          </div>
+      </main>
+
+      <footer class="mastfoot mt-auto">
+        <div class="inner">
+          Copyright © 2020- howtocreateusermysql.com  All Rights Reserved.
+        </div>
+      </footer>
+    </div>
+
+    <style type="text/css">
+    	.input-group { margin-bottom: 4px !important; }
+      textarea { font-size: 12px!important; }
+      code {
+		  display: block;
+		  white-space: pre-wrap
+		}
+    </style>
+  </body>
+</html>

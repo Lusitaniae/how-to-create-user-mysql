@@ -12,6 +12,9 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="cover.css">
   <meta name="description" content="Simple copy paste tool to generate the Mysql queries required for creating users and managing permissions. Safe by default, limited permissions and good passwords. ">
+  <style media="screen">
+      p a { text-decoration: underline;}
+  </style>
   </head>
 
   <body class="text-center">
@@ -78,8 +81,10 @@
 
             	</div>
             	<div class="input-group input-group-sm">
-            		<input type="text" class="form-control" name="hostname" placeholder="hostname" value="localhost">
+            		<input type="text" class="form-control" name="hostname" placeholder="hostname" value="%">
       					<div class="input-group-append">
+                   <button class="btn btn-primary local-hostname"
+                        style="border-right: 2px #323232 solid;" type="button">local</button>
                    <button class="btn btn-primary any-hostname" type="button">any</button>
       					</div>
             	</div>
@@ -100,7 +105,7 @@
 				  <label class="form-check-label">Wordpress/App</label>
 				</div>
 				<div class="form-check disabled">
-				  <input class="form-check-input" type="radio" name="perms" value="replication" disabled>
+				  <input class="form-check-input" type="radio" name="perms" value="replication">
 				  <label class="form-check-label">Replication</label>
 				</div>
 				<div class="form-check disabled">
@@ -121,7 +126,8 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
       <code> < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;</code>
       <br>
       <br>
-      <p>Manage your Mysql grants as code using <a href="ansible.html">Ansible</a> </p>
+      <p>Manage your Mysql grants as code using <br>
+          <a href="ansible.html">Ansible</a> | <a href="chef.html">Chef</a> | <a href="puppet.html">Puppet</a> </p>
       <h3>About Mysql</h3>
       <p>Mysql is one of the most popular relational databases in the market. It's open source and free to use, popular Mysql alternatives like MariaDB, Percona, and Aurora Database from Amazon are all derived from Mysql and offer full (or very near) compatibility with the original Mysql.</p>
       <h3>Security/Other Concerns</h3>
@@ -157,7 +163,7 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
     		'ro': 			'SELECT',
     		'crud': 		'SELECT,UPDATE,INSERT,DELETE',
     		'app': 			'SELECT,UPDATE,INSERT,DELETE,CREATE,ALTER,INDEX,DROP',
-    		'replication': 	'',
+    		'replication': 	'REPLICATION SLAVE',
     		'admin': 		'ALL PRIVILEGES'
     	};
 
@@ -176,6 +182,11 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
 
       $('.any-hostname').on('click', function(e) {
         $('input[name=hostname]').val('%');
+        $('input').trigger("change");
+      });
+
+      $('.local-hostname').on('click', function(e) {
+        $('input[name=hostname]').val('localhost');
         $('input').trigger("change");
       });
 
