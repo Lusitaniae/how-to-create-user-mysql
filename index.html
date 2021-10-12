@@ -97,6 +97,10 @@
 				  <label class="form-check-label">Read Only</label>
 				</div>
 				<div class="form-check">
+				  <input class="form-check-input"  name="perms" type="radio" value="dump">
+				  <label class="form-check-label">MysqlDump (or similar)</label>
+				</div>
+				<div class="form-check">
 				  <input class="form-check-input"  name="perms" type="radio" value="crud">
 				  <label class="form-check-label">CRUD</label>
 				</div>
@@ -161,6 +165,7 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
 
     	let permissions = {
     		'ro': 			'SELECT',
+    		'dump': 		'SELECT,LOCK TABLES',
     		'crud': 		'SELECT,UPDATE,INSERT,DELETE',
     		'app': 			'SELECT,UPDATE,INSERT,DELETE,CREATE,ALTER,INDEX,DROP',
     		'replication': 	'REPLICATION SLAVE',
