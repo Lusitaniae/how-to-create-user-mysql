@@ -134,6 +134,9 @@ GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
           <a href="ansible.html">Ansible</a> | <a href="chef.html">Chef</a> | <a href="puppet.html">Puppet</a> </p>
       <h3>About Mysql</h3>
       <p>Mysql is one of the most popular relational databases in the market. It's open source and free to use, popular Mysql alternatives like MariaDB, Percona, and Aurora Database from Amazon are all derived from Mysql and offer full (or very near) compatibility with the original Mysql.</p>
+      <p>Mysql is known for its speed, reliability, and flexibility. It's also one of the most popular database engines used in web applications. Many popular web applications like WordPress, Drupal, Joomla!, and Magento use Mysql as their primary database back-end.</p>
+      <h3>Why manage users/grants as code?</h3>
+      <p>This is part of the devops movement where you move from having servers that are manually configured and expected to run for years to infrastructure and configuration as code, where any server is easily reproduced via code. This brings the best software engineering practices to the typical SysAdmin work. Any code changes can and should be peer reviewed, and version controlled. Managing changes across multiple environments becomes easier as it's easier to diff simple YAML config files instead of trying to find out the difference between servers. Among many other benefits.</p>
       <h3>Security/Other Concerns</h3>
       <p>The reason you want to create custom user/password and permission grants is 1) Security: you want restrict permissions of each application to the bare minimum, this will reduce blast radius of whatever problem you may face with exploits, 2) Monitoring: different users allows you to monitor database usage per application, impose limits, debug/troubleshoot problems, pinpoint the root cause earlier.</p>
       <h3>Mysql consulting</h3>
