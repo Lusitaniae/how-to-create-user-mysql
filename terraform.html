@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manage Database Users &amp; Grants with Terraform — MySQL &amp; PostgreSQL</title>
+  <meta name="description" content="Create database users and manage grants as code with Terraform using the MySQL and PostgreSQL providers. Declarative, plan-and-apply examples plus Vault dynamic secrets.">
+  <link rel="canonical" href="https://howtocreateusermysql.com/terraform.html">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#4f46e5">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Manage Database Users &amp; Grants with Terraform">
+  <meta property="og:description" content="Declarative Terraform examples for creating MySQL and PostgreSQL users and grants as code.">
+  <meta property="og:url" content="https://howtocreateusermysql.com/terraform.html">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">
+        <span class="logo" aria-hidden="true">◈</span>
+        <span>Create&nbsp;DB&nbsp;User</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Generator</a>
+        <a href="/ansible.html">Ansible</a>
+        <a href="/chef.html">Chef</a>
+        <a href="/puppet.html">Puppet</a>
+        <a href="/terraform.html">Terraform</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap content narrow">
+      <p style="margin-bottom:8px"><a href="/">← Back to the SQL generator</a></p>
+      <h1>Manage database users &amp; grants with Terraform</h1>
+      <p class="lead">Terraform manages users and privileges declaratively through database providers. Because it tracks
+        state, <code>terraform plan</code> shows exactly which users and grants will change before you
+        <code>apply</code> — and destroying a user is as simple as removing its block.</p>
+
+      <h2>MySQL / MariaDB</h2>
+      <p>Use the community <a href="https://registry.terraform.io/providers/petoju/mysql/latest">petoju/mysql</a>
+        provider (the maintained successor to the archived HashiCorp one) with its <code>mysql_user</code> and
+        <code>mysql_grant</code> resources.</p>
+      <pre class="block">terraform {
+  required_providers {
+    mysql = {
+      source  = "petoju/mysql"
+      version = "~&gt; 3.0"
+    }
+  }
+}
+
+provider "mysql" {
+  endpoint = "127.0.0.1:3306"
+  username = "root"
+  password = var.mysql_root_password
+}
+
+resource "mysql_user" "app" {
+  user               = "app_user"
+  host               = "%"
+  plaintext_password = var.app_password
+}
+
+resource "mysql_grant" "app" {
+  user       = mysql_user.app.user
+  host       = mysql_user.app.host
+  database   = "app_db"
+  privileges = ["SELECT", "INSERT", "UPDATE", "DELETE"]
+}</pre>
+
+      <h2>PostgreSQL</h2>
+      <p>Use the <a href="https://registry.terraform.io/providers/cyrilgdn/postgresql/latest">cyrilgdn/postgresql</a>
+        provider with <code>postgresql_role</code> and <code>postgresql_grant</code>.</p>
+      <pre class="block">resource "postgresql_role" "app" {
+  name     = "app_user"
+  login    = true
+  password = var.app_password
+}
+
+resource "postgresql_grant" "app" {
+  role        = postgresql_role.app.name
+  database    = "app_db"
+  schema      = "public"
+  object_type = "table"
+  privileges  = ["SELECT", "INSERT", "UPDATE", "DELETE"]
+}</pre>
+
+      <h2>Why Terraform for database users &amp; grants?</h2>
+      <p>Terraform's plan/apply workflow gives you a reviewable diff of every access change, a single source of truth in
+        state, and the same tooling you already use for the rest of your infrastructure. It's especially natural when the
+        database itself is provisioned by Terraform — for example an AWS RDS or Cloud SQL instance — so the instance and
+        its users live in one codebase. Keep passwords in variables sourced from a secrets manager, and remember that
+        secrets end up in Terraform state, so <strong>encrypt and lock down your state backend</strong>.</p>
+
+      <h2>Prefer credentials that don't live anywhere? Vault dynamic secrets</h2>
+      <p>Static users are only one option. <a href="https://developer.hashicorp.com/vault/docs/secrets/databases">HashiCorp
+        Vault's database secrets engine</a> generates <strong>short-lived, on-demand</strong> database users: an app
+        requests credentials, Vault runs your <code>CREATE USER</code>/<code>GRANT</code> statements, hands back a
+        username and password with a TTL, and automatically drops the user when the lease expires. That removes long-lived
+        passwords from config entirely.</p>
+
+      <h2>Other approaches worth knowing</h2>
+      <ul>
+        <li><strong>Flyway / Liquibase</strong> — versioned SQL migrations that can include <code>GRANT</code> statements alongside schema changes.</li>
+        <li><strong>Kubernetes operators</strong> — e.g. the Percona, CloudNativePG or Zalando Postgres operators reconcile users from custom resources.</li>
+        <li><strong>Salt / Bolt</strong> — additional configuration-management options with MySQL and PostgreSQL modules.</li>
+        <li><strong>Cloud IAM database auth</strong> — AWS RDS IAM authentication and Cloud SQL IAM let you skip passwords and authenticate with cloud identities.</li>
+      </ul>
+
+      <p style="margin-top:28px"><a href="/">Generate the raw SQL instead →</a></p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© 2020–2026 howtocreateusermysql.com</span>
+      <span class="foot-links">
+        <a href="/">Generator</a>
+        <a href="/ansible.html">Ansible</a>
+        <a href="/chef.html">Chef</a>
+        <a href="/puppet.html">Puppet</a>
+        <a href="/terraform.html">Terraform</a>
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>

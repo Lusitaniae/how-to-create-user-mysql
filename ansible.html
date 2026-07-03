@@ -1,83 +1,99 @@
-
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>How to create Mysql user/grants using Ansible</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" href="cover.css">
-  <meta name="description" content="Learn how to use Ansible to manage users in a Mysql database and manage access by creating custom grants for each user.">
-  <style media="screen">
-      p a { text-decoration: underline;}
-  </style>
-  </head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manage MySQL Users &amp; Grants with Ansible — Examples</title>
+  <meta name="description" content="Create MySQL/MariaDB users and manage grants as code with Ansible using the community.mysql collection. Idempotent, peer-reviewable playbook examples.">
+  <link rel="canonical" href="https://howtocreateusermysql.com/ansible.html">
 
-  <body class="text-center">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#4f46e5">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Manage MySQL Users &amp; Grants with Ansible">
+  <meta property="og:description" content="Idempotent Ansible examples for creating MySQL/MariaDB users and grants as code.">
+  <meta property="og:url" content="https://howtocreateusermysql.com/ansible.html">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
 
-    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
-      <header class="masthead mb-auto">
-        <div class="inner">
-          <a href="/"><h1 class="masthead-brand">How to create Mysql user/grants using Ansible</h1></a>
-          <nav class="nav nav-masthead justify-content-center">
-<!--             <a class="nav-link active" href="#">Home</a>
-            <a class="nav-link" href="#">Features</a>
-            <a class="nav-link" href="#">Contact</a> -->
-          </nav>
-        </div>
-      </header>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">
+        <span class="logo" aria-hidden="true">◈</span>
+        <span>Create&nbsp;DB&nbsp;User</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="/">Generator</a>
+        <a href="/ansible.html">Ansible</a>
+        <a href="/chef.html">Chef</a>
+        <a href="/puppet.html">Puppet</a>
+        <a href="/terraform.html">Terraform</a>
+      </nav>
+    </div>
+  </header>
 
-      <main role="main" class="inner cover">
-          <div class="row text-left">
-          	<p> Ansible has official support to managing users and grants through a community maintained module. <a href="https://docs.ansible.com/ansible/latest/modules/mysql_user_module.html">Click here for documentation.</a> There's more modules to manage different aspects of Mysql, you can definitely do a lot more as code using Ansible.
-          	Make sure to read the documentation to know all the features, know every input option and all the use cases supported. </p>
-          	<code>
-- name: Create user with differente permissions to different databases
-  mysql_user:
+  <main>
+    <div class="wrap content narrow">
+      <p style="margin-bottom:8px"><a href="/">← Back to the SQL generator</a></p>
+      <h1>Manage MySQL users &amp; grants with Ansible</h1>
+      <p class="lead">Ansible manages users and privileges through the community-maintained
+        <a href="https://docs.ansible.com/ansible/latest/collections/community/mysql/mysql_user_module.html"><code>community.mysql.mysql_user</code></a>
+        module. The collection can manage far more than users, so read the docs to see every option and use case.</p>
+
+      <h2>Create a user with different privileges per database</h2>
+      <pre class="block">- name: Create a user with different privileges per database
+  community.mysql.mysql_user:
     login_user: mysql_admin
-    login_password: mysql_admin_password
+    login_password: "{{ mysql_admin_password }}"
     name: demo
+    password: "{{ demo_password }}"
     state: present
-    priv: "mydb.*:INSERT,UPDATE/anotherdb.*:SELECT/yetanotherdb.*:ALL"
+    priv: "mydb.*:INSERT,UPDATE/anotherdb.*:SELECT/yetanotherdb.*:ALL"</pre>
 
-            	</code>
-          	<code>
-- name: Create read only users for analytics db
-  mysql_user:
+      <h2>Create read-only users for an analytics database</h2>
+      <pre class="block">- name: Create read-only users for the analytics database
+  community.mysql.mysql_user:
     login_user: mysql_admin
-    login_password: mysql_admin_password
+    login_password: "{{ mysql_admin_password }}"
     name: "{{ item }}"
+    password: "{{ vault_analytics_password }}"
     state: present
     priv: "analytics.*:SELECT"
-  with_items:
-  	- user1
-  	- user2
-  	- user3
+  loop:
+    - user1
+    - user2
+    - user3</pre>
 
-          	</code>
-            <h3>Why Ansible for managing Mysql users/grants</h3>
-            <p>Ansible is a configuration management tool that provides you the ability to manage your infrastructure as code. It's one of the most popular options and it differs from the more popular Chef and Puppet by managing nodes on push mode instead of having agents pulling changes from the central repository. It's biggest strengths are simple configuration based on YAML, pushing changes on demand via SSH connection, no agents required on the target hosts, only python and an SSH server. Being open source you can find Playbooks and roles for all your needs, most of them will be plug and play, with no changes required from you besides adding the roles to your playbooks.</p>
-          </div>
-      </main>
+      <h2>Why Ansible for MySQL users &amp; grants?</h2>
+      <p>Ansible is an agentless configuration-management tool: it pushes changes to your hosts over SSH, so the targets
+        only need Python and an SSH server — no long-running agent to install or maintain. Its strengths are simple
+        YAML-based playbooks, on-demand execution, and a huge library of community roles and collections that are largely
+        plug-and-play.</p>
+      <p>Defining users as code means every access change is version-controlled and peer-reviewed, environments are
+        reproducible, and the <code>mysql_user</code> module is idempotent — re-running a playbook converges to the
+        declared state instead of piling up duplicate grants. Keep passwords in <strong>Ansible Vault</strong> rather than
+        plain text in your repository.</p>
 
-      <footer class="mastfoot mt-auto">
-        <div class="inner">
-          Copyright © 2020- howtocreateusermysql.com  All Rights Reserved.
-        </div>
-      </footer>
+      <p style="margin-top:28px"><a href="/">Generate the raw SQL instead →</a></p>
     </div>
+  </main>
 
-    <style type="text/css">
-    	.input-group { margin-bottom: 4px !important; }
-      textarea { font-size: 12px!important; }
-      code {
-		  display: block;
-		  white-space: pre-wrap
-		}
-    </style>
-  </body>
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© 2020–2026 howtocreateusermysql.com</span>
+      <span class="foot-links">
+        <a href="/">Generator</a>
+        <a href="/ansible.html">Ansible</a>
+        <a href="/chef.html">Chef</a>
+        <a href="/puppet.html">Puppet</a>
+        <a href="/terraform.html">Terraform</a>
+      </span>
+    </div>
+  </footer>
+
+</body>
 </html>

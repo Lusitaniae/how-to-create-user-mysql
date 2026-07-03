@@ -1,1 +1,13 @@
-{"name":"","short_name":"","icons":[{"src":"/android-chrome-192x192.png","sizes":"192x192","type":"image/png"},{"src":"/android-chrome-512x512.png","sizes":"512x512","type":"image/png"}],"theme_color":"#ffffff","background_color":"#ffffff","display":"standalone"}
+{
+  "name": "Create Database User & Grants",
+  "short_name": "Create DB User",
+  "description": "Copy-paste SQL generator to create database users and grant least-privilege permissions across MySQL, PostgreSQL, Oracle, SQL Server and Db2.",
+  "icons": [
+    { "src": "/android-chrome-192x192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/android-chrome-512x512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#4f46e5",
+  "background_color": "#0b0f1a",
+  "display": "standalone",
+  "start_url": "/"
+}

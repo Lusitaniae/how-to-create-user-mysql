@@ -1,229 +1,685 @@
-
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>How to create Mysql user/grants</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link rel="stylesheet" href="cover.css">
-  <meta name="description" content="Simple copy paste tool to generate the Mysql queries required for creating users and managing permissions. Safe by default, limited permissions and good passwords. ">
-  <style media="screen">
-      p a { text-decoration: underline;}
-  </style>
-  </head>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create Database User &amp; Grant Permissions — SQL Generator (MySQL, PostgreSQL, Oracle, SQL Server, Db2)</title>
+  <meta name="description" content="Free copy-paste SQL generator to create a database user and grant least-privilege permissions in MySQL/MariaDB, PostgreSQL, Oracle, SQL Server and IBM Db2. Secure defaults, strong random passwords, nothing leaves your browser.">
+  <link rel="canonical" href="https://howtocreateusermysql.com/">
 
-  <body class="text-center">
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+  <link rel="manifest" href="/site.webmanifest">
+  <meta name="theme-color" content="#4f46e5">
 
-    <div class="cover-container d-flex h-100 p-3 mx-auto flex-column">
-      <header class="masthead mb-auto">
-        <div class="inner">
-          <a href="/"><h1 class="masthead-brand">How to create Mysql user/grants</h1></a>
+  <!-- Open Graph / Twitter -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="How to Create a Database User">
+  <meta property="og:title" content="Create Database User &amp; Grant Permissions — SQL Generator">
+  <meta property="og:description" content="Generate copy-paste SQL to create users and grant least-privilege permissions across MySQL/MariaDB, PostgreSQL, Oracle, SQL Server and IBM Db2.">
+  <meta property="og:url" content="https://howtocreateusermysql.com/">
+  <meta property="og:image" content="https://howtocreateusermysql.com/android-chrome-512x512.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Create Database User &amp; Grant Permissions — SQL Generator">
+  <meta name="twitter:description" content="Copy-paste SQL to create least-privilege users in MySQL, PostgreSQL, Oracle, SQL Server and Db2.">
+  <meta name="twitter:image" content="https://howtocreateusermysql.com/android-chrome-512x512.png">
 
-          <nav class="nav nav-masthead justify-content-center">
-<!--             <a class="nav-link active" href="#">Home</a>
-            <a class="nav-link" href="#">Features</a>
-            <a class="nav-link" href="#">Contact</a> -->
-          </nav>
+  <link rel="stylesheet" href="/styles.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "name": "Database User & Grants Generator",
+        "url": "https://howtocreateusermysql.com/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any (web browser)",
+        "description": "Generate copy-paste SQL to create a database user and grant least-privilege permissions in MySQL/MariaDB, PostgreSQL, Oracle, SQL Server and IBM Db2.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "featureList": [
+          "MySQL and MariaDB user & grant SQL",
+          "PostgreSQL role & privilege SQL",
+          "Oracle CREATE USER & GRANT SQL",
+          "SQL Server login, user & role SQL",
+          "IBM Db2 GRANT SQL",
+          "Secure random password generator"
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How do I create a user in MySQL and grant permissions?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Run CREATE USER 'name'@'host' IDENTIFIED BY 'password'; then GRANT the specific privileges you need, for example GRANT SELECT ON db.* TO 'name'@'host';. Grant only the privileges the application actually uses instead of ALL PRIVILEGES." }
+          },
+          {
+            "@type": "Question",
+            "name": "How is creating a database user different in PostgreSQL, Oracle, SQL Server and Db2?",
+            "acceptedAnswer": { "@type": "Answer", "text": "PostgreSQL uses CREATE USER ... WITH PASSWORD and GRANT on schemas/tables; host access is controlled in pg_hba.conf. Oracle uses CREATE USER ... IDENTIFIED BY plus GRANT CREATE SESSION and object privileges. SQL Server separates a server-level LOGIN from a database USER and uses fixed database roles such as db_datareader. IBM Db2 authenticates against the operating system, so you create the OS account first and only GRANT database privileges." }
+          },
+          {
+            "@type": "Question",
+            "name": "What permissions should I grant a database user?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Follow least privilege: grant only what the workload needs. Reporting users need SELECT only; typical apps need SELECT, INSERT, UPDATE and DELETE; schema-managing apps also need CREATE/ALTER. Avoid granting full admin (ALL PRIVILEGES, DBA, sysadmin, SUPERUSER) to application accounts." }
+          },
+          {
+            "@type": "Question",
+            "name": "Is this SQL generator safe to use?",
+            "acceptedAnswer": { "@type": "Answer", "text": "Yes. Everything runs locally in your browser. No usernames, passwords or generated statements are sent to any server. You can also verify by disconnecting from the network — the tool keeps working." }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="/">
+        <span class="logo" aria-hidden="true">◈</span>
+        <span>Create&nbsp;DB&nbsp;User</span>
+      </a>
+      <nav class="site-nav" aria-label="Primary">
+        <a href="#engines">Engines</a>
+        <a href="#permissions">Permissions</a>
+        <a href="#security">Security</a>
+        <a href="#monitoring">Monitoring</a>
+        <a href="#as-code">As&nbsp;Code</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="hero">
+        <h1>Create a Database User &amp; Grant Permissions</h1>
+        <p class="sub">A copy-paste SQL generator for <strong>least-privilege</strong> user accounts.
+          Pick your engine, fill in the details, and get correct, secure statements in one click.</p>
+        <div class="badges">
+          <span class="badge">MySQL / MariaDB</span>
+          <span class="badge">PostgreSQL</span>
+          <span class="badge">Oracle</span>
+          <span class="badge">SQL Server</span>
+          <span class="badge">IBM Db2</span>
         </div>
-      </header>
-<br>
-      <main role="main" class="inner cover">
-          <div class="row text-left">
-            <!-- DB ENGINE -->
-            <div class="col">
-          <div class="custom-control custom-radio">
-            <input type="radio" class="custom-control-input" checked>
-            <label class="custom-control-label">Mysql/MariaDb</label>
-          </div>
-          <div class="custom-control custom-radio">
-            <input type="radio" class="custom-control-input" disabled>
-            <label class="custom-control-label">Postgres</label>
-          </div>
-          <div class="custom-control custom-radio">
-            <input type="radio" class="custom-control-input" disabled>
-            <label class="custom-control-label">Oracle</label>
-          </div>
-          <div class="custom-control custom-radio">
-            <input type="radio" class="custom-control-input" disabled>
-            <label class="custom-control-label">DB2</label>
-          </div>
-          <div class="custom-control custom-radio">
-            <input type="radio" class="custom-control-input" disabled>
-            <label class="custom-control-label">SQL Server</label>
-          </div>
-            </div>
-            <!-- END DB ENGINE -->
-            <!-- User/DB -->
-            <div class="col">
-            	<div class="input-group input-group-sm">
-            		<input type="text" class="form-control" name="username" placeholder="username">
-            	</div>
-            	<div class="input-group input-group-sm">
-            		<input type="text" class="form-control" name="database" placeholder="database">
-            	</div>
-              <div class="input-group input-group-sm">
-                <input type="text" class="form-control" name="tables" value="*" placeholder="tables">
-                <div class="input-group-append">
-                   <button class="btn btn-primary any-tables" type="button">any</button>
-                </div>
+      </section>
 
+      <!-- ============ TOOL ============ -->
+      <section class="card tool" id="tool" aria-label="SQL generator">
+        <div class="engine-tabs" role="tablist" aria-label="Database engine">
+          <button class="engine-tab" role="tab" data-engine="mysql"    aria-selected="true">MySQL / MariaDB</button>
+          <button class="engine-tab" role="tab" data-engine="postgres" aria-selected="false">PostgreSQL</button>
+          <button class="engine-tab" role="tab" data-engine="oracle"   aria-selected="false">Oracle</button>
+          <button class="engine-tab" role="tab" data-engine="mssql"    aria-selected="false">SQL Server</button>
+          <button class="engine-tab" role="tab" data-engine="db2"      aria-selected="false">IBM Db2</button>
+        </div>
+
+        <div class="tool-grid">
+          <!-- inputs -->
+          <div>
+            <div class="field">
+              <label for="f-user">Username</label>
+              <div class="input-row"><input id="f-user" name="username" type="text" placeholder="app_user" autocomplete="off" spellcheck="false"></div>
+            </div>
+            <div class="field">
+              <label for="f-db" id="lbl-db">Database</label>
+              <div class="input-row"><input id="f-db" name="database" type="text" placeholder="app_db" autocomplete="off" spellcheck="false"></div>
+            </div>
+            <div class="field">
+              <label for="f-tables" id="lbl-tables">Tables</label>
+              <div class="input-row has-btn">
+                <input id="f-tables" name="tables" type="text" value="*" placeholder="*" autocomplete="off" spellcheck="false">
+                <button class="mini-btn" type="button" data-set="tables-any">all</button>
               </div>
-            	<div class="input-group input-group-sm">
-            		<input type="text" class="form-control" name="password" placeholder="password">
-                <div class="input-group-append">
-                   <button class="btn btn-primary password-new" type="button">new</button>
-                </div>
-
-            	</div>
-            	<div class="input-group input-group-sm">
-            		<input type="text" class="form-control" name="hostname" placeholder="hostname" value="%">
-      					<div class="input-group-append">
-                   <button class="btn btn-primary local-hostname"
-                        style="border-right: 2px #323232 solid;" type="button">local</button>
-                   <button class="btn btn-primary any-hostname" type="button">any</button>
-      					</div>
-            	</div>
             </div>
-            <!-- User/DB -->
-            <!-- Permissions -->
-            <div class="col text-left">
-				<div class="form-check align-items-left">
-				  <input class="form-check-input"  name="perms" type="radio" value="ro" checked>
-				  <label class="form-check-label">Read Only</label>
-				</div>
-				<div class="form-check">
-				  <input class="form-check-input"  name="perms" type="radio" value="dump">
-				  <label class="form-check-label">MysqlDump (or similar)</label>
-				</div>
-				<div class="form-check">
-				  <input class="form-check-input"  name="perms" type="radio" value="crud">
-				  <label class="form-check-label">CRUD</label>
-				</div>
-				<div class="form-check disabled">
-				  <input class="form-check-input" type="radio" name="perms" value="app">
-				  <label class="form-check-label">Wordpress/App</label>
-				</div>
-				<div class="form-check disabled">
-				  <input class="form-check-input" type="radio" name="perms" value="replication">
-				  <label class="form-check-label">Replication</label>
-				</div>
-				<div class="form-check disabled">
-				  <input class="form-check-input" type="radio" name="perms" value="admin">
-				  <label class="form-check-label">Full Access/Admin</label>
-				</div>
-        </div>
-            <!-- Permissions -->
+            <div class="field" id="wrap-pass">
+              <label for="f-pass">Password</label>
+              <div class="input-row has-btn">
+                <input id="f-pass" name="password" type="text" autocomplete="off" spellcheck="false">
+                <button class="mini-btn" type="button" data-set="pw-new">new</button>
+              </div>
+            </div>
+            <div class="field" id="wrap-host">
+              <label for="f-host" id="lbl-host">Host</label>
+              <div class="input-row has-btn">
+                <input id="f-host" name="hostname" type="text" value="%" placeholder="%" autocomplete="off" spellcheck="false">
+                <button class="mini-btn" type="button" data-set="host-local">localhost</button>
+                <button class="mini-btn" type="button" data-set="host-any">any</button>
+              </div>
+            </div>
           </div>
-      <div class="md-form">
-    <br>
-        <textarea onfocus="this.select()" id="form7" class="md-textarea form-control" rows="3">
-CREATE USER 'username'@'localhost' IDENTIFIED BY '******';
-GRANT SELECT ON database.* TO 'username'@'localhost';</textarea>
-      </div>
-<br>
-      <p> Generate your own secure password by pasting the snipet below in your shell:</p>
-      <code> < /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c${1:-32};echo;</code>
-      <br>
-      <br>
-      <p>Manage your Mysql grants as code using <br>
-          <a href="ansible.html">Ansible</a> | <a href="chef.html">Chef</a> | <a href="puppet.html">Puppet</a> </p>
-      <h3>About Mysql</h3>
-      <p>Mysql is one of the most popular relational databases in the market. It's open source and free to use, popular Mysql alternatives like MariaDB, Percona, and Aurora Database from Amazon are all derived from Mysql and offer full (or very near) compatibility with the original Mysql.</p>
-      <p>Mysql is known for its speed, reliability, and flexibility. It's also one of the most popular database engines used in web applications. Many popular web applications like WordPress, Drupal, Joomla!, and Magento use Mysql as their primary database back-end.</p>
-      <h3>Why manage users/grants as code?</h3>
-      <p>This is part of the devops movement where you move from having servers that are manually configured and expected to run for years to infrastructure and configuration as code, where any server is easily reproduced via code. This brings the best software engineering practices to the typical SysAdmin work. Any code changes can and should be peer reviewed, and version controlled. Managing changes across multiple environments becomes easier as it's easier to diff simple YAML config files instead of trying to find out the difference between servers. Among many other benefits.</p>
-      <h3>Security/Other Concerns</h3>
-      <p>The reason you want to create custom user/password and permission grants is 1) Security: you want restrict permissions of each application to the bare minimum, this will reduce blast radius of whatever problem you may face with exploits, 2) Monitoring: different users allows you to monitor database usage per application, impose limits, debug/troubleshoot problems, pinpoint the root cause earlier.</p>
-      <h3>Mysql consulting</h3>
-      <p>Looking for expert database admin consulting for your infrastructure? Founded by Peter Zaitsev, Percona is a database consulting company. They can provide support, advising or manage services for you. They maintain their own fork of Mysql, develop their own tools for live backups, Cluster management, and others. Active participants in the OSS community around Mysql and it's derivatives. Peter Zaitsev is the author of the most popular book about high performance Mysql and is a popular speaker at conferences. Percona employs over 100 database experts all over the world and can support any enterprise looking for improvements.</p>
-      </main>
 
-      <footer class="mastfoot mt-auto">
-        <div class="inner">
-          Copyright © 2020- howtocreateusermysql.com  All Rights Reserved.
+          <!-- permissions -->
+          <div>
+            <fieldset class="perms" id="perms">
+              <legend>Permission preset</legend>
+              <label class="perm" data-perm="ro">
+                <input type="radio" name="perms" value="ro" checked>
+                <span><span class="pt">Read only</span><span class="pd">Reporting, dashboards, analytics — SELECT.</span></span>
+              </label>
+              <label class="perm" data-perm="dump">
+                <input type="radio" name="perms" value="dump">
+                <span><span class="pt">Backup / dump</span><span class="pd">Consistent exports — SELECT plus lock/show.</span></span>
+              </label>
+              <label class="perm" data-perm="crud">
+                <input type="radio" name="perms" value="crud">
+                <span><span class="pt">CRUD</span><span class="pd">Typical read/write app — SELECT, INSERT, UPDATE, DELETE.</span></span>
+              </label>
+              <label class="perm" data-perm="app">
+                <input type="radio" name="perms" value="app">
+                <span><span class="pt">App / migrations</span><span class="pd">CRUD plus schema changes (CREATE, ALTER…). Good for WordPress &amp; ORMs.</span></span>
+              </label>
+              <label class="perm" data-perm="replication">
+                <input type="radio" name="perms" value="replication">
+                <span><span class="pt">Replication</span><span class="pd">A dedicated account for replicas / read-scaling.</span></span>
+              </label>
+              <label class="perm" data-perm="admin">
+                <input type="radio" name="perms" value="admin">
+                <span><span class="pt">Full access / admin</span><span class="pd">Everything. Use sparingly — never for apps.</span></span>
+              </label>
+            </fieldset>
+          </div>
         </div>
-      </footer>
+
+        <p class="engine-note" id="engine-note">
+          <span class="ic" aria-hidden="true">ⓘ</span>
+          <span id="engine-note-text"></span>
+        </p>
+
+        <div class="output">
+          <div class="output-bar">
+            <span class="left">
+              <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span class="lbl" id="out-lang">MySQL</span>
+            </span>
+            <button class="copy-btn" id="copy" type="button">
+              <span aria-hidden="true">⧉</span> <span class="copy-label">Copy</span>
+            </button>
+          </div>
+          <pre class="sql"><code id="sql-output"></code></pre>
+        </div>
+
+        <p class="pw-tip">
+          Prefer to generate a password in your shell?
+          <code>&lt; /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c32; echo</code>
+        </p>
+      </section>
+
     </div>
 
-    <style type="text/css">
-    	.input-group { margin-bottom: 4px !important; }
-      textarea { font-size: 12px!important; }
-    </style>
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-<script src="./files/password-generator.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
+    <!-- ============ CONTENT ============ -->
+    <div class="wrap content">
+      <section class="narrow">
+        <p class="lead">Creating a dedicated, scoped user for every application is one of the highest-leverage
+          things you can do for database security. This tool writes the exact statements for you — and below is a
+          plain-English reference for how it works in each engine.</p>
+      </section>
 
-      $(document).ready(function() {
-        updatePassword();
-      });
+      <section id="engines">
+        <h2>How to create a user in each database</h2>
+        <p>The idea is the same everywhere — an identity, a password (or an OS/identity provider), and a narrow set of
+          privileges — but the syntax differs. Here are the canonical patterns the generator produces.</p>
 
-    	let permissions = {
-    		'ro': 			'SELECT',
-    		'dump': 		'SELECT,LOCK TABLES',
-    		'crud': 		'SELECT,UPDATE,INSERT,DELETE',
-    		'app': 			'SELECT,UPDATE,INSERT,DELETE,CREATE,ALTER,INDEX,DROP',
-    		'replication': 	'REPLICATION SLAVE',
-    		'admin': 		'ALL PRIVILEGES'
-    	};
+        <h3>MySQL &amp; MariaDB</h3>
+        <p>Identity is a <code>user@host</code> pair, so the same username from a different host is a different account.
+          Grant privileges per database, and only <code>FLUSH PRIVILEGES</code> if you edited the grant tables directly.</p>
+        <pre class="block"><span class="k">CREATE USER</span> <span class="s">'app_user'</span>@<span class="s">'%'</span> <span class="k">IDENTIFIED BY</span> <span class="s">'••••••'</span>;
+<span class="k">GRANT</span> SELECT, INSERT, UPDATE, DELETE <span class="k">ON</span> `app_db`.* <span class="k">TO</span> <span class="s">'app_user'</span>@<span class="s">'%'</span>;</pre>
 
-      function updatePassword() {
-        let pass = generatePassword(32, false);
-        $('input[name=password]').val(pass);
+        <h3>PostgreSQL</h3>
+        <p>Roles are cluster-wide, so grant <code>CONNECT</code> on the database, <code>USAGE</code> on the schema, and
+          privileges on the tables. Client host/IP rules live in <code>pg_hba.conf</code>, not in SQL.</p>
+        <pre class="block"><span class="k">CREATE USER</span> app_user <span class="k">WITH PASSWORD</span> <span class="s">'••••••'</span>;
+<span class="k">GRANT</span> CONNECT <span class="k">ON DATABASE</span> app_db <span class="k">TO</span> app_user;
+<span class="k">GRANT</span> USAGE <span class="k">ON SCHEMA</span> public <span class="k">TO</span> app_user;
+<span class="k">GRANT</span> SELECT <span class="k">ON ALL TABLES IN SCHEMA</span> public <span class="k">TO</span> app_user;</pre>
+
+        <h3>Oracle</h3>
+        <p>A user <em>is</em> a schema. A new account needs <code>CREATE SESSION</code> before it can even log in, then
+          object or system privileges for data access.</p>
+        <pre class="block"><span class="k">CREATE USER</span> app_user <span class="k">IDENTIFIED BY</span> <span class="s">"••••••"</span>;
+<span class="k">GRANT</span> CREATE SESSION <span class="k">TO</span> app_user;
+<span class="k">GRANT</span> SELECT <span class="k">ON</span> app_db.employees <span class="k">TO</span> app_user;</pre>
+
+        <h3>SQL Server</h3>
+        <p>Authentication (a server-level <code>LOGIN</code>) is separate from authorization (a database <code>USER</code>).
+          Membership in fixed roles like <code>db_datareader</code> is the idiomatic way to grant access.</p>
+        <pre class="block"><span class="k">CREATE LOGIN</span> [app_user] <span class="k">WITH PASSWORD</span> = <span class="s">'••••••'</span>;
+<span class="k">USE</span> [app_db];
+<span class="k">CREATE USER</span> [app_user] <span class="k">FOR LOGIN</span> [app_user];
+<span class="k">ALTER ROLE</span> db_datareader <span class="k">ADD MEMBER</span> [app_user];</pre>
+
+        <h3>IBM Db2</h3>
+        <p>Db2 doesn't store passwords — it trusts the operating system (or LDAP/Kerberos). Create the OS account first,
+          then grant it database privileges.</p>
+        <pre class="block"><span class="c">-- create the OS user first, then in Db2:</span>
+<span class="k">GRANT</span> CONNECT <span class="k">ON DATABASE</span> <span class="k">TO USER</span> app_user;
+<span class="k">GRANT</span> SELECT <span class="k">ON TABLE</span> app_db.employees <span class="k">TO USER</span> app_user;</pre>
+      </section>
+
+      <section id="permissions">
+        <h2>Which permissions does each preset grant?</h2>
+        <p>The presets map to a real-world job. Start with the least-powerful preset that still lets the workload run.</p>
+        <div class="table-scroll">
+          <table class="ref">
+            <thead>
+              <tr><th>Preset</th><th>Use it for</th><th>Roughly grants</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Read only</strong></td><td>BI tools, analytics, read replicas of logic</td><td><code>SELECT</code></td></tr>
+              <tr><td><strong>Backup / dump</strong></td><td>mysqldump, pg_dump, exports</td><td><code>SELECT</code> + lock/show/event</td></tr>
+              <tr><td><strong>CRUD</strong></td><td>Most web &amp; API backends</td><td><code>SELECT, INSERT, UPDATE, DELETE</code></td></tr>
+              <tr><td><strong>App / migrations</strong></td><td>WordPress, Rails/Django/Laravel with migrations</td><td>CRUD + <code>CREATE, ALTER, INDEX, DROP</code></td></tr>
+              <tr><td><strong>Replication</strong></td><td>Replica/standby accounts</td><td><code>REPLICATION SLAVE</code> / <code>WITH REPLICATION</code></td></tr>
+              <tr><td><strong>Full / admin</strong></td><td>Break-glass &amp; DBA use only</td><td><code>ALL PRIVILEGES</code> / <code>DBA</code> / <code>sysadmin</code></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="lead" style="font-size:.95rem">Not every engine supports every preset natively — for example, replication
+          is a first-class grant in MySQL and PostgreSQL but a configuration workflow in SQL Server and Oracle. The tool
+          disables presets that don't apply to the selected engine.</p>
+      </section>
+
+      <section id="security">
+        <h2>Security best practices</h2>
+        <div class="section-grid">
+          <div class="tile"><h3>Least privilege</h3><p>Grant only what the workload uses. A leaked read-only credential can't drop your tables.</p></div>
+          <div class="tile"><h3>One user per app</h3><p>Separate accounts let you rate-limit, audit and rotate independently, and shrink the blast radius of a breach.</p></div>
+          <div class="tile"><h3>Strong, random passwords</h3><p>Use 24+ random characters. This tool generates 32-character secrets locally in your browser.</p></div>
+          <div class="tile"><h3>Restrict the host</h3><p>Prefer <code>localhost</code> or a specific IP/subnet over the <code>%</code> wildcard whenever the topology allows it.</p></div>
+          <div class="tile"><h3>Never ship admin creds</h3><p>Applications should never connect as <code>root</code>, <code>sa</code>, <code>SYSTEM</code> or a superuser.</p></div>
+          <div class="tile"><h3>Rotate &amp; store safely</h3><p>Keep credentials in a secrets manager or vault, out of source control, and rotate on a schedule.</p></div>
+        </div>
+      </section>
+
+      <section id="monitoring">
+        <h2>Monitor what those users do</h2>
+        <p>Creating a separate account per application isn't just a security win — it's what makes database observability
+          possible. Once each workload connects with its own user you can attribute every query, connection and lock to a
+          real service, spot a runaway report before it takes down production, and see exactly who is hammering the
+          database at 3&nbsp;a.m. Least-privilege users and good monitoring are two halves of the same practice.</p>
+        <div class="section-grid">
+          <div class="tile">
+            <h3>Percona Monitoring &amp; Management</h3>
+            <p>Free, open-source observability for MySQL, MariaDB, PostgreSQL and MongoDB. PMM ships per-user and
+              per-query analytics (Query Analytics / QAN), so you can rank the heaviest queries by the account that ran
+              them and catch missing indexes and lock contention early.</p>
+          </div>
+          <div class="tile">
+            <h3>PostgreSQL</h3>
+            <p>Start with the built-in <code>pg_stat_activity</code> and <code>pg_stat_statements</code> views to break
+              down load by role, then layer on tools like <strong>pganalyze</strong> or Prometheus +
+              <code>postgres_exporter</code> for dashboards and alerting.</p>
+          </div>
+          <div class="tile">
+            <h3>Oracle &amp; SQL Server</h3>
+            <p>Oracle's AWR/ASH reports and Enterprise Manager profile activity by session and user. On SQL Server, the
+              dynamic management views (<code>sys.dm_exec_*</code>), Query Store and Extended Events do the same.</p>
+          </div>
+          <div class="tile">
+            <h3>Audit the grants themselves</h3>
+            <p>Monitoring isn't only about performance. Periodically review who holds which privileges — query
+              <code>information_schema</code> / <code>pg_roles</code> / <code>DBA_SYS_PRIVS</code> — and revoke access
+              that's no longer used. Least privilege drifts over time.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="as-code" class="narrow">
+        <h2>Manage users &amp; grants as code</h2>
+        <p>One-off SQL is great for learning and quick fixes, but for real infrastructure you want these accounts defined
+          declaratively, peer-reviewed and version-controlled. Managing users as code means any environment is reproducible,
+          drift is visible in a diff, and access changes go through the same review as the rest of your codebase.</p>
+        <p>See idempotent examples with the popular infrastructure &amp; configuration-management tools:</p>
+        <div class="section-grid">
+          <a class="tile" href="/terraform.html"><h3>Terraform →</h3><p>Plan-and-apply user &amp; grant resources for MySQL and PostgreSQL.</p></a>
+          <a class="tile" href="/ansible.html"><h3>Ansible →</h3><p>Agentless, push-over-SSH modules for creating users and grants.</p></a>
+          <a class="tile" href="/chef.html"><h3>Chef →</h3><p>Ruby-based resources to declare users and privileges.</p></a>
+          <a class="tile" href="/puppet.html"><h3>Puppet →</h3><p>Declarative manifests for reproducible database access.</p></a>
+        </div>
+        <p style="margin-top:6px">Want credentials that don't live in config at all? <strong>HashiCorp Vault's</strong>
+          database secrets engine issues short-lived users on demand and drops them when the lease expires. Migration
+          tools like <strong>Flyway</strong> and <strong>Liquibase</strong>, and Kubernetes <strong>operators</strong>
+          (Percona, CloudNativePG), can manage grants too. The <a href="/terraform.html">Terraform page</a> covers these.</p>
+      </section>
+
+      <section id="faq" class="narrow">
+        <h2>Frequently asked questions</h2>
+
+        <details class="faq" open>
+          <summary>Is my data safe — do the username and password leave my browser?</summary>
+          <div class="a"><p>No. The entire generator runs client-side in JavaScript. Nothing you type and no
+            generated statement is ever sent to a server. You can disconnect from the internet and it keeps working.</p></div>
+        </details>
+        <details class="faq">
+          <summary>What's the difference between a MySQL user and a PostgreSQL/Oracle role?</summary>
+          <div class="a"><p>In MySQL an account is a <code>user@host</code> pair scoped by connecting host. PostgreSQL and
+            Oracle use cluster/instance-wide roles (Postgres controls the connecting host separately in
+            <code>pg_hba.conf</code>). SQL Server splits it into a server <code>LOGIN</code> and a per-database
+            <code>USER</code>, and Db2 delegates authentication to the operating system entirely.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Why grant specific privileges instead of ALL PRIVILEGES?</summary>
+          <div class="a"><p>Least privilege limits damage. If an app only reads data, a compromised credential (SQL
+            injection, leaked config, stolen laptop) can't delete rows, drop tables or read other databases. It also makes
+            auditing and troubleshooting far easier.</p></div>
+        </details>
+        <details class="faq">
+          <summary>Do I need FLUSH PRIVILEGES in MySQL?</summary>
+          <div class="a"><p>Only if you modified the grant tables directly with <code>INSERT</code>/<code>UPDATE</code>.
+            When you use <code>CREATE USER</code> and <code>GRANT</code>, MySQL reloads privileges automatically. It's
+            included as a harmless belt-and-suspenders line you can delete.</p></div>
+        </details>
+        <details class="faq">
+          <summary>How do I create a read-only user for backups?</summary>
+          <div class="a"><p>Pick your engine, choose the <strong>Backup / dump</strong> preset, and the tool adds the
+            extra privileges a consistent export needs (locking/showing views and events on MySQL, <code>SELECT</code>
+            across the schema on PostgreSQL, and so on).</p></div>
+        </details>
+      </section>
+
+      <section class="cta">
+        <h2>Ship secure database access, every time</h2>
+        <p>Bookmark this generator for the next time you stand up an app, a replica, or an analytics account —
+          and wire it into your infrastructure-as-code once you're happy with the grants.</p>
+        <a class="btn" href="#tool">Back to the generator</a>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>© 2020–<span id="year">2026</span> howtocreateusermysql.com — free &amp; runs entirely in your browser.</span>
+      <span class="foot-links">
+        <a href="/terraform.html">Terraform</a>
+        <a href="/ansible.html">Ansible</a>
+        <a href="/chef.html">Chef</a>
+        <a href="/puppet.html">Puppet</a>
+      </span>
+    </div>
+  </footer>
+
+  <script>
+  (function () {
+    "use strict";
+
+    /* ---------- helpers ---------- */
+    var $ = function (s, r) { return (r || document).querySelector(s); };
+    var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+    function esc(s) { return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+    function genPassword(len) {
+      var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-";
+      var out = "", a = new Uint32Array(len);
+      (window.crypto || window.msCrypto).getRandomValues(a);
+      for (var i = 0; i < len; i++) out += chars[a[i] % chars.length];
+      return out;
+    }
+
+    /* value getters with sensible fallbacks */
+    function vals() {
+      var t = ($("#f-tables").value || "").trim();
+      return {
+        user: ($("#f-user").value || "").trim() || "app_user",
+        db:   ($("#f-db").value || "").trim() || "app_db",
+        tables: t || "*",
+        pass: ($("#f-pass").value || "").trim() || "password",
+        host: ($("#f-host").value || "").trim() || "%",
+        perm: (($("input[name=perms]:checked") || {}).value) || "ro"
+      };
+    }
+
+    /* ---------- per-engine SQL builders ---------- */
+
+    function mysqlSQL(v) {
+      var obj = "`" + v.db + "`." + (v.tables === "*" ? "*" : "`" + v.tables + "`");
+      var lines = ["CREATE USER '" + v.user + "'@'" + v.host + "' IDENTIFIED BY '" + v.pass + "';"];
+      var map = {
+        ro:   "SELECT",
+        dump: "SELECT, LOCK TABLES, SHOW VIEW, EVENT, TRIGGER",
+        crud: "SELECT, INSERT, UPDATE, DELETE",
+        app:  "SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, DROP, REFERENCES"
+      };
+      if (v.perm === "admin") {
+        lines.push("GRANT ALL PRIVILEGES ON *.* TO '" + v.user + "'@'" + v.host + "' WITH GRANT OPTION;");
+      } else if (v.perm === "replication") {
+        lines.push("GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO '" + v.user + "'@'" + v.host + "';");
+      } else {
+        lines.push("GRANT " + map[v.perm] + " ON " + obj + " TO '" + v.user + "'@'" + v.host + "';");
       }
+      lines.push("FLUSH PRIVILEGES;");
+      return lines.join("\n");
+    }
 
-    	function createUserQuery(user, host, pass) {
-    		return `CREATE USER '${user}'@'${host}' IDENTIFIED BY '${pass}';`;
-    	}
+    function postgresSQL(v) {
+      var lines = ['CREATE USER "' + v.user + "\" WITH PASSWORD '" + v.pass + "';"];
+      if (v.perm === "admin") {
+        lines.push('ALTER USER "' + v.user + '" WITH SUPERUSER CREATEDB CREATEROLE;');
+        return lines.join("\n");
+      }
+      if (v.perm === "replication") {
+        lines.push('ALTER USER "' + v.user + '" WITH REPLICATION;');
+        lines.push('-- add the role to pg_hba.conf with a "replication" entry as well.');
+        return lines.join("\n");
+      }
+      var priv = { ro: "SELECT", dump: "SELECT", crud: "SELECT, INSERT, UPDATE, DELETE",
+                   app: "SELECT, INSERT, UPDATE, DELETE" }[v.perm];
+      lines.push('GRANT CONNECT ON DATABASE "' + v.db + '" TO "' + v.user + '";');
+      if (v.perm === "app") {
+        lines.push('GRANT USAGE, CREATE ON SCHEMA public TO "' + v.user + '";');
+      } else {
+        lines.push('GRANT USAGE ON SCHEMA public TO "' + v.user + '";');
+      }
+      if (v.tables === "*") {
+        lines.push("GRANT " + priv + ' ON ALL TABLES IN SCHEMA public TO "' + v.user + '";');
+        if (v.perm === "app") lines.push('GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO "' + v.user + '";');
+        lines.push("ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT " + priv + ' ON TABLES TO "' + v.user + '";');
+      } else {
+        lines.push("GRANT " + priv + ' ON TABLE "' + v.tables + '" TO "' + v.user + '";');
+      }
+      return lines.join("\n");
+    }
 
-    	function createGrantsQuery(perms, db, tables, user, host) {
-    		return `GRANT ${perms} ON ${db}.${tables} TO '${user}'@'${host}';`;
-    	}
+    function oracleSQL(v) {
+      var lines = ["CREATE USER " + v.user + ' IDENTIFIED BY "' + v.pass + '";'];
+      lines.push("GRANT CREATE SESSION TO " + v.user + ";");
+      if (v.perm === "admin") { lines.push("GRANT DBA TO " + v.user + ";"); return lines.join("\n"); }
 
-      $('.any-hostname').on('click', function(e) {
-        $('input[name=hostname]').val('%');
-        $('input').trigger("change");
+      var dml = { ro: ["SELECT"], dump: ["SELECT"],
+                  crud: ["SELECT", "INSERT", "UPDATE", "DELETE"],
+                  app: ["SELECT", "INSERT", "UPDATE", "DELETE"] }[v.perm];
+      if (v.tables === "*") {
+        // system privileges across all schemas
+        lines.push("GRANT " + dml.map(function (p) { return p + " ANY TABLE"; }).join(", ") + " TO " + v.user + ";");
+      } else {
+        lines.push("GRANT " + dml.join(", ") + " ON " + v.db + "." + v.tables + " TO " + v.user + ";");
+      }
+      if (v.perm === "app") {
+        lines.push("GRANT CREATE TABLE, CREATE VIEW, CREATE SEQUENCE TO " + v.user + ";");
+        lines.push("ALTER USER " + v.user + " QUOTA UNLIMITED ON USERS;");
+      }
+      return lines.join("\n");
+    }
+
+    function mssqlSQL(v) {
+      var lines = ["CREATE LOGIN [" + v.user + "] WITH PASSWORD = '" + v.pass + "';",
+                   "USE [" + v.db + "];",
+                   "GO",
+                   "CREATE USER [" + v.user + "] FOR LOGIN [" + v.user + "];"];
+      if (v.perm === "admin") {
+        lines.push("ALTER SERVER ROLE sysadmin ADD MEMBER [" + v.user + "];");
+        return lines.join("\n");
+      }
+      if (v.tables !== "*" && (v.perm === "ro" || v.perm === "crud")) {
+        var p = v.perm === "ro" ? "SELECT" : "SELECT, INSERT, UPDATE, DELETE";
+        lines.push("GRANT " + p + " ON OBJECT::dbo." + v.tables + " TO [" + v.user + "];");
+        return lines.join("\n");
+      }
+      var roles = { ro: ["db_datareader"], dump: ["db_datareader", "db_backupoperator"],
+                    crud: ["db_datareader", "db_datawriter"],
+                    app: ["db_datareader", "db_datawriter", "db_ddladmin"] }[v.perm];
+      roles.forEach(function (r) { lines.push("ALTER ROLE " + r + " ADD MEMBER [" + v.user + "];"); });
+      return lines.join("\n");
+    }
+
+    function db2SQL(v) {
+      var lines = ["-- Db2 authenticates against the OS/LDAP — create the account there first.",
+                   "GRANT CONNECT ON DATABASE TO USER " + v.user + ";"];
+      if (v.perm === "admin") {
+        lines.push("GRANT DBADM, DATAACCESS, ACCESSCTRL ON DATABASE TO USER " + v.user + ";");
+        return lines.join("\n");
+      }
+      var dml = { ro: "SELECT", crud: "SELECT, INSERT, UPDATE, DELETE",
+                  app: "SELECT, INSERT, UPDATE, DELETE" }[v.perm];
+      var tbl = v.tables === "*" ? v.db + ".<table>" : v.db + "." + v.tables;
+      lines.push("GRANT " + dml + " ON TABLE " + tbl + " TO USER " + v.user + ";");
+      if (v.tables === "*") lines.push("-- Db2 grants DML per table; repeat for each, or use DATAACCESS for the whole database.");
+      if (v.perm === "app") lines.push("GRANT CREATETAB, BINDADD ON DATABASE TO USER " + v.user + ";");
+      return lines.join("\n");
+    }
+
+    /* ---------- engine metadata ---------- */
+    var ENGINES = {
+      mysql: {
+        label: "MySQL", dbLabel: "Database", tablesLabel: "Tables", host: true, password: true,
+        perms: ["ro", "dump", "crud", "app", "replication", "admin"],
+        note: "Works for MySQL, MariaDB, Percona Server and Amazon Aurora. Identity is user@host, so restrict the host when you can. FLUSH PRIVILEGES is optional with CREATE USER/GRANT.",
+        build: mysqlSQL
+      },
+      postgres: {
+        label: "PostgreSQL", dbLabel: "Database", tablesLabel: "Table (or leave * for all)", host: false, password: true,
+        perms: ["ro", "dump", "crud", "app", "replication", "admin"],
+        note: "PostgreSQL controls the connecting host/IP in pg_hba.conf, not in SQL. Grants target the public schema; adjust if your objects live elsewhere.",
+        build: postgresSQL
+      },
+      oracle: {
+        label: "Oracle", dbLabel: "Schema owner", tablesLabel: "Table (or * for ANY)", host: false, password: true,
+        perms: ["ro", "crud", "app", "admin"],
+        note: "In Oracle a user is a schema. A new account needs CREATE SESSION before it can log in. Host restrictions are handled by the listener / sqlnet, not this DDL.",
+        build: oracleSQL
+      },
+      mssql: {
+        label: "SQL Server", dbLabel: "Database", tablesLabel: "Table (or * for role-based)", host: false, password: true,
+        perms: ["ro", "dump", "crud", "app", "admin"],
+        note: "SQL Server separates a server LOGIN from a database USER. Fixed database roles (db_datareader, db_datawriter…) are the idiomatic way to grant access. GO separates batches in SSMS/sqlcmd.",
+        build: mssqlSQL
+      },
+      db2: {
+        label: "IBM Db2", dbLabel: "Schema", tablesLabel: "Table (or * for all)", host: false, password: false,
+        perms: ["ro", "crud", "app", "admin"],
+        note: "Db2 doesn't set passwords in SQL — it trusts the operating system, LDAP or Kerberos. Create the OS user first, then run these GRANTs while connected to the database.",
+        build: db2SQL
+      }
+    };
+
+    var current = "mysql";
+
+    /* ---------- syntax highlight (safe: escapes first) ---------- */
+    var KEYWORDS = /\b(CREATE|USER|LOGIN|ROLE|ALTER|SERVER|DATABASE|SCHEMA|TABLE|OBJECT|GRANT|REVOKE|ON|TO|FROM|IDENTIFIED|BY|WITH|PASSWORD|PRIVILEGES|OPTION|ALL|SELECT|INSERT|UPDATE|DELETE|SESSION|CONNECT|USAGE|REFERENCES|INDEX|DROP|LOCK|TABLES|SHOW|VIEW|EVENT|TRIGGER|REPLICATION|SLAVE|CLIENT|FLUSH|USE|GO|ADD|MEMBER|FOR|IN|DEFAULT|SEQUENCES|ANY|QUOTA|UNLIMITED|SUPERUSER|CREATEDB|CREATEROLE|DBA|DBADM|DATAACCESS|ACCESSCTRL|CREATETAB|BINDADD|sysadmin|db_datareader|db_datawriter|db_ddladmin|db_backupoperator)\b/g;
+
+    function kw(seg) { return seg.replace(KEYWORDS, '<span class="k">$1</span>'); }
+
+    function highlight(sql) {
+      return esc(sql).split("\n").map(function (line) {
+        if (/^\s*--/.test(line)) return '<span class="c">' + line + "</span>";
+        var out = "", last = 0, m, re = /'[^']*'|"[^"]*"/g;
+        while ((m = re.exec(line)) !== null) {
+          out += kw(line.slice(last, m.index));
+          out += '<span class="s">' + m[0] + "</span>";
+          last = m.index + m[0].length;
+        }
+        return out + kw(line.slice(last));
+      }).join("\n");
+    }
+
+    /* ---------- render ---------- */
+    function render() {
+      var eng = ENGINES[current];
+      var sql = eng.build(vals());
+      $("#sql-output").innerHTML = highlight(sql);
+      $("#sql-output").dataset.raw = sql;
+    }
+
+    function applyEngine(name) {
+      current = name;
+      var eng = ENGINES[name];
+
+      $$(".engine-tab").forEach(function (t) {
+        t.setAttribute("aria-selected", String(t.dataset.engine === name));
       });
+      $("#out-lang").textContent = eng.label;
+      $("#lbl-db").textContent = eng.dbLabel;
+      $("#lbl-tables").textContent = eng.tablesLabel;
+      $("#engine-note-text").textContent = eng.note;
 
-      $('.local-hostname').on('click', function(e) {
-        $('input[name=hostname]').val('localhost');
-        $('input').trigger("change");
+      // host + password field availability
+      $("#wrap-host").style.display = eng.host ? "" : "none";
+      $("#f-pass").disabled = !eng.password;
+      $("#wrap-pass").style.opacity = eng.password ? "1" : ".55";
+
+      // permission availability
+      $$(".perm").forEach(function (p) {
+        var ok = eng.perms.indexOf(p.dataset.perm) !== -1;
+        p.classList.toggle("is-disabled", !ok);
+        var input = $("input", p);
+        input.disabled = !ok;
       });
+      // if current selection is now disabled, fall back to read-only
+      var checked = $("input[name=perms]:checked");
+      if (!checked || checked.disabled) $('input[name=perms][value="ro"]').checked = true;
 
-      $('.any-tables').on('click', function(e) {
-        $('input[name=tables]').val('*');
-        $('input').trigger("change");
-      });
+      render();
+    }
 
-      $('.password-new').on('click', function(e) {
-        updatePassword();
-        $('input').trigger("change");
-      });
+    /* ---------- events ---------- */
+    $$(".engine-tab").forEach(function (t) {
+      t.addEventListener("click", function () { applyEngine(t.dataset.engine); });
+    });
 
+    $("#tool").addEventListener("input", render);
+    $("#tool").addEventListener("change", render);
 
-    	$('input').on('change', function(e) {
+    document.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-set]");
+      if (!b) return;
+      var act = b.dataset.set;
+      if (act === "pw-new") $("#f-pass").value = genPassword(32);
+      if (act === "host-local") $("#f-host").value = "localhost";
+      if (act === "host-any") $("#f-host").value = "%";
+      if (act === "tables-any") $("#f-tables").value = "*";
+      render();
+    });
 
-	    	let user = $('input[name=username]').val().trim();
-	    	let pass = $('input[name=password]').val().trim();
-	    	let host = $('input[name=hostname]').val().trim();
-	    	let db   = $('input[name=database]').val().trim();
-	    	let tables = $('input[name=tables]').val().trim();
-	    	let perms = permissions[$('input[name=perms]:checked').val()];
-	    	let userQuery = createUserQuery(user, host, pass);
-	    	let grantsQuery = createGrantsQuery(perms, db, tables, user, host);
-	    	let result = [userQuery, grantsQuery].join('\n');
-	    	$('textarea').val(result);
+    $("#copy").addEventListener("click", function () {
+      var txt = $("#sql-output").dataset.raw || $("#sql-output").textContent;
+      var done = function () {
+        var btn = $("#copy"), lbl = $(".copy-label", btn);
+        btn.classList.add("copied"); lbl.textContent = "Copied!";
+        setTimeout(function () { btn.classList.remove("copied"); lbl.textContent = "Copy"; }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(txt).then(done, done);
+      } else {
+        var ta = document.createElement("textarea");
+        ta.value = txt; document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); } catch (e) {}
+        document.body.removeChild(ta); done();
+      }
+    });
 
-    	});
-
-    </script>
-  </body>
+    /* ---------- init ---------- */
+    $("#year").textContent = new Date().getFullYear();
+    $("#f-pass").value = genPassword(32);
+    applyEngine("mysql");
+  })();
+  </script>
+</body>
 </html>
